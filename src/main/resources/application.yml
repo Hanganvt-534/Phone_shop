@@ -1,0 +1,28 @@
+server:
+  port: 3000
+  servlet:
+    context-path: /phone_shop/api/v1
+
+spring:
+  application:
+    name: phone_shop
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: Ha123456
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+jwt:
+  signer-key: "7f3Kp9Vx2Lm8Qw4Nz6Rt1Yh5Ua9Ce0Bg3Ds7Fk2Wp8Xv4Mn6"
+  valid-duration: 3600
+  refreshable-duration: 36000
+
