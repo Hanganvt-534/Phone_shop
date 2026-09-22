@@ -13,10 +13,12 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+@Table(name = "roles")
 public class Role {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id",  nullable = false)
-     String id;
+     Long id;
     @Column(name = "name", nullable = false)
     String name;
 

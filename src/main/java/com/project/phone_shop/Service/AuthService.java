@@ -98,7 +98,7 @@ public class AuthService {
                 new JWTClaimsSet.Builder()
 
                         // Subject = ID của user
-                        .subject(user.getId())
+                        .subject(user.getId().toString())
 
                         // Ai phát hành token
                         .issuer("phone_shop.com")
@@ -204,7 +204,7 @@ public class AuthService {
         try {
             var signToken = verifyToken(request.getToken(), true);
 
-            String jit = signToken.getJWTClaimsSet().getJWTID();
+            Long jit = Long.valueOf(signToken.getJWTClaimsSet().getJWTID());
             Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
 
             InvalidatedToken invalidatedToken =
@@ -219,7 +219,7 @@ public class AuthService {
     public AuthResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
         var signedJWT = verifyToken(request.getToken(), true);
 
-        var jit = signedJWT.getJWTClaimsSet().getJWTID();
+        Long jit = Long.valueOf(signedJWT.getJWTClaimsSet().getJWTID());
         var expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
         InvalidatedToken invalidatedToken =

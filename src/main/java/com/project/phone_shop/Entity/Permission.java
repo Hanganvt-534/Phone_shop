@@ -1,8 +1,6 @@
 package com.project.phone_shop.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,10 +11,12 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+@Table(name = "permissions")
 public class Permission {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "permission_id", nullable = false)
-    String id;
+    Long id;
     @Column(name = "name", nullable = false)
     String name;
     @Column(name = "description")

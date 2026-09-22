@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+@Table(name = "inventory")
 public class Inventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

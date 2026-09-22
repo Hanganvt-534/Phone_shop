@@ -1,7 +1,6 @@
 package com.project.phone_shop.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,10 +13,12 @@ import java.util.Date;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+@Table(name = "invalidated_tokens")
 public class InvalidatedToken {
     @Id
-
-    String id;
-
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "invalidated_token_id")
+    Long id;
+    @Column(name = "token", nullable = false)
     Date expiryTime;
 }
