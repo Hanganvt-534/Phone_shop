@@ -8,7 +8,7 @@ spring:
     name: phone_shop
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/phone_shop1
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: Ha123456
@@ -25,7 +25,7 @@ spring:
         default_schema: public
 
 jwt:
-  signer-key: "7f3Kp9Vx2Lm8Qw4Nz6Rt1Yh5Ua9Ce0Bg3Ds7Fk2Wp8Xv4Mn6"
+  signer-key: "7f4c9a2e8b1d6f3a5c7e9b2d4a6f8c1e3b5d7a9f2c4e6b8d1a3f5c7e9b2d4a6f8c1e3b5d7a9f2c4e6b8d1a3f5c7e9b2d4a6"
   valid-duration: 3600
   refreshable-duration: 36000
 

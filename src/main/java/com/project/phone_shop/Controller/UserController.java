@@ -8,6 +8,7 @@ import com.project.phone_shop.Service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,14 +35,14 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    ApiResponse<UserResponse> createUser(@RequestBody UserRequest userRequest) {
+    ApiResponse<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.createUser(userRequest))
                 .build();
     }
 
     @PutMapping("/update")
-    ApiResponse<UserResponse> updateUser(@RequestBody UserRequest userRequest) {
+    ApiResponse<UserResponse> updateUser(@Valid @RequestBody UserRequest userRequest) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.updateUser(userRequest))
                 .build();
