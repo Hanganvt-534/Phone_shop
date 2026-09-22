@@ -44,7 +44,7 @@ public class ProductService {
 
 
 
-    public ProductResponse updateProduct(String id, ProductRequest productRequest) {
+    public ProductResponse updateProduct(Long id, ProductRequest productRequest) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
@@ -54,13 +54,15 @@ public class ProductService {
     }
 
 
-    public void deleteProduct(String id) {
+    public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         productRepository.delete(product);
     }
 
-    public ProductResponse getProductById(String id) {
-        return null;
+    public ProductResponse getProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+        return productMapper.toProductResponse(product);
     }
 }

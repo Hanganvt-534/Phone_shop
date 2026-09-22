@@ -14,12 +14,15 @@ spring:
     password: Ha123456
 
   jpa:
+    generate-ddl: true
     hibernate:
       ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: public
 
 jwt:
   signer-key: "7f3Kp9Vx2Lm8Qw4Nz6Rt1Yh5Ua9Ce0Bg3Ds7Fk2Wp8Xv4Mn6"

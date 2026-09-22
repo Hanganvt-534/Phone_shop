@@ -36,7 +36,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<ProductResponse> getProductById(@PathVariable String id) {
+    public ApiResponse<ProductResponse> getProductById(@PathVariable Long id) {
         return ApiResponse.<ProductResponse>builder()
                 .result(productService.getProductById(id))
                 .build();
@@ -75,14 +75,14 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<ProductResponse> updateProduct(@PathVariable String id, @RequestBody ProductRequest productRequest) {
+    public ApiResponse<ProductResponse> updateProduct(@PathVariable Long id, @RequestBody ProductRequest productRequest) {
         return ApiResponse.<ProductResponse>builder()
                 .result(productService.updateProduct(id, productRequest))
                 .build();
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteProduct(@PathVariable String id) {
+    public ApiResponse<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ApiResponse.<Void>builder()
                 .build();

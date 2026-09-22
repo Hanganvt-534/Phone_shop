@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductRequest {
     @NotBlank
-    String id;
+    Long id;
 
     @NotBlank(message = "Product name is required")
     String name;
