@@ -6,8 +6,7 @@ import com.project.phone_shop.DTO.Response.UserResponse;
 import com.project.phone_shop.Entity.User;
 import com.project.phone_shop.Service.UserService;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,9 +14,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
     UserService userService;
 
