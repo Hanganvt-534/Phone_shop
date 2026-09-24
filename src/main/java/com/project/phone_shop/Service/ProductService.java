@@ -64,4 +64,17 @@ public class ProductService {
         productRepository.delete(product);
     }
 
+    public void sellProduct(Long id, ProductRequest productRequest) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        if (product.getQuantity() < productRequest.getQuantity()) {
+            throw new AppException(ErrorCode.INSUFFICIENT_QUANTITY);
+        }
+
+        product.setQuantity(product.getQuantity() - productRequest.getQuantity());
+        productRepository.save(product);
+
+    }
+
 }

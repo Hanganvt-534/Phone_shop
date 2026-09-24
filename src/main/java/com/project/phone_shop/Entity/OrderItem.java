@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @Entity
 @Getter
 @Setter
@@ -11,18 +13,25 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "inventory")
-public class Inventory {
+@Table(name = "order_items")
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "inventory_id", nullable = false, updatable = false)
+    @Column(name = "order_item_id", nullable = false, updatable = false)
     Long id;
 
-    @OneToOne
-    @JoinColumn(name = "product_id", nullable = false, unique = true)
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
     Product product;
 
     @Column(name = "quantity", nullable = false)
     Integer quantity;
+
+    @Column(name = "unit_price", nullable = false, precision = 15, scale = 2)
+    BigDecimal unitPrice;
 }

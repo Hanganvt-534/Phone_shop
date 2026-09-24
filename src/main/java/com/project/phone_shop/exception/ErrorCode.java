@@ -21,7 +21,11 @@ public enum ErrorCode {
     USER_NOT_FOUND(1005, "User not found", HttpStatus.NOT_FOUND), PRODUCT_EXISTS(1010, "Product already exists", HttpStatus.BAD_REQUEST),
     PRODUCT_NOT_FOUND(1011, "Product not found", HttpStatus.NOT_FOUND),
     INVENTORY_NOT_FOUND(1012, "Inventory not found", HttpStatus.NOT_FOUND),
-    INVENTORY_ALREADY_EXISTS(1013, "Inventory already exists", HttpStatus.BAD_REQUEST);
+    INVENTORY_ALREADY_EXISTS(1013, "Inventory already exists", HttpStatus.BAD_REQUEST),
+    INSUFFICIENT_QUANTITY(1014, "Insufficient quantity in stock", HttpStatus.BAD_REQUEST),
+    CART_ITEM_NOT_FOUND(1015, "Cart item not found", HttpStatus.NOT_FOUND),
+    CART_EMPTY(1016, "Cart is empty", HttpStatus.BAD_REQUEST),
+    ORDER_NOT_FOUND(1017, "Order not found", HttpStatus.NOT_FOUND);
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
