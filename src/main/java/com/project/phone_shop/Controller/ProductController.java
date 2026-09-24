@@ -4,7 +4,6 @@ import com.project.phone_shop.DTO.Request.ApiResponse;
 import com.project.phone_shop.DTO.Request.ProductRequest;
 import com.project.phone_shop.DTO.Request.ProductSearchRequest;
 import com.project.phone_shop.DTO.Response.ProductResponse;
-import com.project.phone_shop.Entity.Product;
 import com.project.phone_shop.Service.ProductService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,17 +29,11 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping
-    public ApiResponse<List<Product>> getProducts() {
+    public ApiResponse<List<ProductResponse>> getProducts() {
         var result = productService.getProducts();
-        return ApiResponse.<List<Product>>builder().result(result).build();
+        return ApiResponse.<List<ProductResponse>>builder().result(result).build();
     }
 
-    @GetMapping("/{id}")
-    public ApiResponse<ProductResponse> getProductById(@PathVariable Long id) {
-        return ApiResponse.<ProductResponse>builder()
-                .result(productService.getProductById(id))
-                .build();
-    }
 
     @GetMapping("/search")
     public ApiResponse<Page<ProductResponse>> search(

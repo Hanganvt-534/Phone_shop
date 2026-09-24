@@ -15,8 +15,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductRequest {
-    @NotBlank
-    Long id;
 
     @NotBlank(message = "Product name is required")
     String name;
@@ -38,7 +36,7 @@ public class ProductRequest {
     @NotBlank(message = "Category is required")
     String category;
 
-    String imageUrl;
+   String imageUrl;
 
     BigDecimal minPrice;
     BigDecimal maxPrice;

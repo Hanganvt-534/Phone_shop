@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +24,8 @@ public class ProductService {
     final ProductRepository productRepository;
     final ProductMapper productMapper;
 
-    public List<Product> getProducts() {
-        return productRepository.findAll();
+    public List<ProductResponse> getProducts() {
+        return productRepository.findAll().stream().map(productMapper::toProductResponse).toList();
     }
 
     public Page<ProductResponse> search(ProductSearchRequest productSearchRequest, Pageable pageable) {
@@ -32,8 +33,9 @@ public class ProductService {
         return productRepository.findAll(spec, pageable).map(productMapper::toProductResponse);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public ProductResponse addProduct(ProductRequest productRequest) {
-       if(productRepository.existsById(productRequest.getId())) {
+       if(productRepository.existsByName(productRequest.getName())) {
           throw new AppException(ErrorCode.PRODUCT_EXISTS);
        }
          Product product = productMapper.toProduct(productRequest);
@@ -44,6 +46,7 @@ public class ProductService {
 
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     public ProductResponse updateProduct(Long id, ProductRequest productRequest) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -54,15 +57,11 @@ public class ProductService {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         productRepository.delete(product);
     }
 
-    public ProductResponse getProductById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
-        return productMapper.toProductResponse(product);
-    }
 }

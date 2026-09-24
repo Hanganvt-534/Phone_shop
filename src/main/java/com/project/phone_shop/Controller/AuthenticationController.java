@@ -20,12 +20,13 @@ public class AuthenticationController {
     AuthService authService;
 
     @PostMapping("/token")
-    public ApiResponse<AuthResponse> login(@RequestBody  AuthRequest authRequest) {
+    public ApiResponse<AuthResponse> login(@RequestBody AuthRequest authRequest) {
         return ApiResponse.<AuthResponse>builder().result(authService.login(authRequest)).build();
     }
 
     @PostMapping("/introspect")
-    ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request) throws ParseException, JOSEException {
+    ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request)
+            throws ParseException, JOSEException {
         var result = authService.introspect(request);
         return ApiResponse.<IntrospectResponse>builder().result(result).build();
     }
