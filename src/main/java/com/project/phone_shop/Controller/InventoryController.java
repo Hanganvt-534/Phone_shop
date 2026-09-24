@@ -24,9 +24,9 @@ public class InventoryController {
     InventoryService inventoryService;
 
     @GetMapping
-    public ApiResponse<List<Inventory>> getInventory() {
-        List<Inventory> inventories = inventoryService.getInventory();
-        return ApiResponse.<List<Inventory>>builder()
+    public ApiResponse<List<InventoryResponse>> getInventory() {
+        List<InventoryResponse> inventories = inventoryService.getInventory();
+        return ApiResponse.<List<InventoryResponse>>builder()
                 .result(inventories)
                 .build();
     }

@@ -23,8 +23,13 @@ import java.util.List;
 public class InventoryService {
     final InventoryRepository inventoryRepository;
     final InventoryMapper inventoryMapper;
-    public List<Inventory> getInventory() {
-        return inventoryRepository.findAll();
+    public List<InventoryResponse> getInventory() {
+        return inventoryRepository.findAll().stream()
+                .map(inventory -> InventoryResponse.builder()
+                        .productId(inventory.getProduct().getId())
+                        .quantity(inventory.getQuantity())
+                        .build())
+                .toList();
     }
 
     public InventoryResponse getInventoryByProductId(Long productId) {
