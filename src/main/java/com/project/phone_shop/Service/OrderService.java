@@ -1,5 +1,6 @@
 package com.project.phone_shop.Service;
 
+import com.project.phone_shop.Config.SecurityUtils;
 import com.project.phone_shop.DTO.Request.CartItemRequest;
 import com.project.phone_shop.DTO.Request.CheckoutRequest;
 import com.project.phone_shop.DTO.Request.DirectSaleRequest;
@@ -15,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,22 +35,13 @@ public class OrderService {
     UserRepository userRepository;
     CartService cartService;
 
-    private String getCurrentUsername() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
-    }
-
-    private User getCurrentUser() {
-        String username = getCurrentUsername();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-    }
-
     /**
      * Checkout giỏ hàng → tạo đơn hàng + trừ kho
      */
     @Transactional
     public OrderResponse checkoutFromCart(CheckoutRequest request) {
-        User user = getCurrentUser();
+        User user = SecurityUtils.getCurrentUser(userRepository);
+        log.info("User '{}' (ID: {}) is checking out from cart", user.getUsername(), user.getId());
         Cart cart = cartService.getCartEntityForUser(user);
 
         if (cart.getItems().isEmpty()) {
@@ -117,9 +108,13 @@ public class OrderService {
     /**
      * Mua thẳng không qua giỏ hàng → tạo đơn hàng + trừ kho
      */
+    /**
+     * Mua thẳng không qua giỏ hàng → tạo đơn hàng + trừ kho
+     */
     @Transactional
     public OrderResponse directSale(DirectSaleRequest request) {
-        User user = getCurrentUser();
+        User user = SecurityUtils.getCurrentUser(userRepository);
+        log.info("User '{}' (ID: {}) is performing direct sale order", user.getUsername(), user.getId());
 
         List<OrderItem> orderItems = new ArrayList<>();
         BigDecimal totalPrice = BigDecimal.ZERO;
@@ -170,7 +165,7 @@ public class OrderService {
         order.getItems().addAll(orderItems);
         order = orderRepository.save(order);
 
-        log.info("Direct sale order {} created for user {}", order.getId(), user.getUsername());
+        log.info("Direct sale order {} created successfully for user {}", order.getId(), user.getUsername());
         return toOrderResponse(order);
     }
 
@@ -178,7 +173,8 @@ public class OrderService {
      * Lấy danh sách đơn hàng của user hiện tại
      */
     public List<OrderResponse> getMyOrders() {
-        User user = getCurrentUser();
+        User user = SecurityUtils.getCurrentUser(userRepository);
+        log.info("User '{}' (ID: {}) is retrieving their orders", user.getUsername(), user.getId());
         return orderRepository.findByUserIdOrderByCreatedAtDesc(user.getId())
                 .stream()
                 .map(this::toOrderResponse)
@@ -189,19 +185,19 @@ public class OrderService {
      * Lấy chi tiết đơn hàng
      */
     public OrderResponse getOrderById(Long orderId) {
-        User user = getCurrentUser();
+        User user = SecurityUtils.getCurrentUser(userRepository);
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
         // User chỉ xem được đơn của mình, ADMIN xem được tất cả
-        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication()
-                .getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        boolean isAdmin = SecurityUtils.isAdmin();
 
         if (!isAdmin && !order.getUser().getId().equals(user.getId())) {
+            log.warn("Access denied: User '{}' does not own order {}", user.getUsername(), orderId);
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
+        log.info("User '{}' (ID: {}, isAdmin: {}) accessed order {}", user.getUsername(), user.getId(), isAdmin, orderId);
         return toOrderResponse(order);
     }
 
@@ -211,6 +207,9 @@ public class OrderService {
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public OrderResponse updateOrderStatus(Long orderId, OrderStatus newStatus) {
+        String adminUsername = SecurityUtils.getCurrentUsername().orElse("ADMIN");
+        log.info("Admin '{}' is updating status of order {} to {}", adminUsername, orderId, newStatus);
+
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
@@ -238,6 +237,8 @@ public class OrderService {
      */
     @PreAuthorize("hasRole('ADMIN')")
     public List<OrderResponse> getAllOrders() {
+        String adminUsername = SecurityUtils.getCurrentUsername().orElse("ADMIN");
+        log.info("Admin '{}' is retrieving all orders in system", adminUsername);
         return orderRepository.findAll()
                 .stream()
                 .map(this::toOrderResponse)

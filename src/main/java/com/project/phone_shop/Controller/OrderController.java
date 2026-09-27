@@ -29,8 +29,7 @@ public class OrderController {
                 .result(orderService.checkoutFromCart(request))
                 .build();
     }
-
-    @PostMapping("/direct")
+     @PostMapping("/direct") //User → "Mua ngay" -> order
     public ApiResponse<OrderResponse> directSale(@Valid @RequestBody DirectSaleRequest request) {
         return ApiResponse.<OrderResponse>builder()
                 .result(orderService.directSale(request))
