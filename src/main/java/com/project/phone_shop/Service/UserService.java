@@ -30,8 +30,8 @@ public class UserService {
     final PasswordEncoder passwordEncoder;
 
     @PreAuthorize("hasRole('ADMIN')")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
 

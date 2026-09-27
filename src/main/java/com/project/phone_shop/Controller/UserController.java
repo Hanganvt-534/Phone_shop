@@ -20,9 +20,9 @@ import java.util.List;
 public class UserController {
     UserService userService;
 
-    @GetMapping(" ")
-    ApiResponse<List<User>> getAllUsers() {
-        return ApiResponse.<List<User>>builder()
+    @GetMapping
+    ApiResponse<List<UserResponse>> getAllUsers() {
+        return ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getAllUsers())
                 .build();
     }
