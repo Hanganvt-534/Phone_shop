@@ -121,6 +121,11 @@ public class AuthService {
                         // ID riêng của JWT
                         .jwtID(UUID.randomUUID().toString())
 
+                        // Thông tin định danh user trong JWT
+                        .claim("userId", user.getId())
+                        .claim("username", user.getUsername())
+                        .claim("email", user.getEmail() != null ? user.getEmail() : "")
+
                         // Quyền của user
                         .claim("scope", buildScope(user))
 
@@ -204,11 +209,10 @@ public class AuthService {
         try {
             var signToken = verifyToken(request.getToken(), true);
 
-            Long jit = Long.valueOf(signToken.getJWTClaimsSet().getJWTID());
             Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
 
             InvalidatedToken invalidatedToken =
-                    InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
+                    InvalidatedToken.builder().expiryTime(expiryTime).build();
 
             introspectRepository.save(invalidatedToken);
         } catch (AppException | JOSEException | ParseException exception){

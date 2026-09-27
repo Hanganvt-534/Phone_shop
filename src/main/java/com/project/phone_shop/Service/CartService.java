@@ -1,5 +1,6 @@
 package com.project.phone_shop.Service;
 
+import com.project.phone_shop.Config.SecurityUtils;
 import com.project.phone_shop.DTO.Request.CartItemRequest;
 import com.project.phone_shop.DTO.Response.CartItemResponse;
 import com.project.phone_shop.DTO.Response.CartResponse;
@@ -11,7 +12,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,15 +30,11 @@ public class CartService {
     UserRepository userRepository;
     InventoryRepository inventoryRepository;
 
-    // Lấy username từ JWT token
-    private String getCurrentUsername() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
-    }
-
-    private User getCurrentUser() {
-        String username = getCurrentUsername();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    // Lấy user đang đăng nhập từ JWT thông qua SecurityUtils
+    public User getCurrentUser() {
+        User user = SecurityUtils.getCurrentUser(userRepository);
+        log.debug("Current authenticated user from JWT: {} (ID: {})", user.getUsername(), user.getId());
+        return user;
     }
 
     // Lấy hoặc tạo giỏ hàng cho user hiện tại
@@ -49,6 +45,7 @@ public class CartService {
 
     public CartResponse getMyCart() {
         User user = getCurrentUser();
+        log.info("User '{}' (ID: {}) is accessing their cart", user.getUsername(), user.getId());
         Cart cart = getOrCreateCart(user);
         return toCartResponse(cart);
     }
@@ -56,6 +53,8 @@ public class CartService {
     @Transactional
     public CartResponse addToCart(CartItemRequest request) {
         User user = getCurrentUser();
+        log.info("User '{}' (ID: {}) is adding product ID: {} (qty: {}) to cart",
+                user.getUsername(), user.getId(), request.getProductId(), request.getQuantity());
         Cart cart = getOrCreateCart(user);
 
         Product product = productRepository.findById(request.getProductId())
@@ -98,6 +97,8 @@ public class CartService {
     @Transactional
     public CartResponse updateCartItem(Long cartItemId, CartItemRequest request) {
         User user = getCurrentUser();
+        log.info("User '{}' (ID: {}) is updating cart item {} to quantity {}",
+                user.getUsername(), user.getId(), cartItemId, request.getQuantity());
         Cart cart = getOrCreateCart(user);
 
         CartItem cartItem = cartItemRepository.findById(cartItemId)
@@ -105,6 +106,7 @@ public class CartService {
 
         // Chỉ sửa item thuộc giỏ của user hiện tại
         if (!cartItem.getCart().getId().equals(cart.getId())) {
+            log.warn("Access denied: User '{}' does not own cart item {}", user.getUsername(), cartItemId);
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
@@ -126,12 +128,15 @@ public class CartService {
     @Transactional
     public CartResponse removeFromCart(Long cartItemId) {
         User user = getCurrentUser();
+        log.info("User '{}' (ID: {}) is removing cart item {} from cart",
+                user.getUsername(), user.getId(), cartItemId);
         Cart cart = getOrCreateCart(user);
 
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
 
         if (!cartItem.getCart().getId().equals(cart.getId())) {
+            log.warn("Access denied: User '{}' does not own cart item {}", user.getUsername(), cartItemId);
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
