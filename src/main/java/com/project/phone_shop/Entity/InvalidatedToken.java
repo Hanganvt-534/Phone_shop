@@ -19,6 +19,6 @@ public class InvalidatedToken {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "invalidated_token_id")
     Long id;
-    @Column(name = "token", nullable = false)
+    @Column(name = "expiryTime", nullable = false)
     Date expiryTime;
 }

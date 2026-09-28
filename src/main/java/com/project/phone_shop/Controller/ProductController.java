@@ -67,7 +67,7 @@ public class ProductController {
                 .build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ApiResponse<ProductResponse> updateProduct(@PathVariable Long id, @RequestBody ProductRequest productRequest) {
         return ApiResponse.<ProductResponse>builder()
                 .result(productService.updateProduct(id, productRequest))

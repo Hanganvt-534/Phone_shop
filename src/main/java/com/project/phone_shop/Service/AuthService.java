@@ -223,11 +223,11 @@ public class AuthService {
     public AuthResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
         var signedJWT = verifyToken(request.getToken(), true);
 
-        Long jit = Long.valueOf(signedJWT.getJWTClaimsSet().getJWTID());
+        Long userId = Long.parseLong(signedJWT.getJWTClaimsSet().getSubject());
         var expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
         InvalidatedToken invalidatedToken =
-                InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
+                InvalidatedToken.builder().id(userId).expiryTime(expiryTime).build();
 
         introspectRepository.save(invalidatedToken);
 
