@@ -1,6 +1,7 @@
 package com.project.phone_shop.DTO.Request;
 
-import jakarta.validation.constraints.NotBlank;
+import com.project.phone_shop.Entity.Enum.PaymentMethodEnum;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,8 +12,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CheckoutRequest {
 
-    @NotBlank(message = "Payment method is required")
-    String paymentMethod; // CASH, CREDIT_CARD, etc.
+    @NotNull(message = "Payment method is required")
+    PaymentMethodEnum paymentMethod;
 
     String shippingAddress;
 
